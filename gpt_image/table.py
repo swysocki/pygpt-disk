@@ -102,7 +102,7 @@ class Header:
         self.last_usable_lba = Entry(48, 8, self.geometry.last_usable_lba)
         self.disk_guid = Entry(56, 16, self.guid.bytes_le)
         self.partition_entry_lba = Entry(72, 8, self.geometry.partition_entry_lba)
-        self.number_of_partition_entries = Entry(80, 4, 128)
+        self.number_of_partition_entries = Entry(80, 4, 0)
         self.size_of_partition_entries = Entry(84, 4, 128)
         self.partition_entry_array_crc32 = Entry(88, 4, 0)
         self.reserved_padding = Entry(92, 420, 0)
@@ -196,6 +196,12 @@ class Table:
         self.partitions = PartitionEntryArray(self.geometry)
 
     def update(self) -> None:
+        self.primary_header.number_of_partition_entries.data = len(
+            self.partitions.entries
+        )
+        self.secondary_header.number_of_partition_entries.data = len(
+            self.partitions.entries
+        )
         # calculate partition checksum and write to header
         self.checksum_partitions(self.primary_header)
         self.checksum_partitions(self.secondary_header)

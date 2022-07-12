@@ -1,7 +1,6 @@
 import uuid
 from enum import Enum
 from math import ceil
-from sys import byteorder
 from typing import List, Union
 
 from gpt_image.entry import Entry
